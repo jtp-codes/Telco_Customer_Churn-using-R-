@@ -1,0 +1,127 @@
+# ===============================
+# Telco Customer Churn Analysis
+# ===============================
+
+# Load required libraries
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(scales)
+
+suppressPackageStartupMessages({
+  library(readr)
+  library(dplyr)
+  library(ggplot2)
+  library(tidyr)
+  library(scales)
+})
+
+# Load data
+cat("data frame\n")
+df <- read_csv("D:/git projects/WA_Fn-UseC_-Telco-Customer-Churn.csv")
+print(head(df, 100))
+
+# Replace blanks in TotalCharges and convert to numeric
+df <- df %>%
+  mutate(
+    TotalCharges = ifelse(TotalCharges == " ", "0", TotalCharges),
+    TotalCharges = as.numeric(TotalCharges)
+  )
+
+# Basic data checks
+str(df)
+summary(df)
+
+cat("Null values by column:\n")
+print(colSums(is.na(df)))
+cat("Total null values:", sum(is.na(df)), "\n")
+
+cat("Duplicate rows:", sum(duplicated(df)), "\n")
+cat("Duplicate customerIDs:", sum(duplicated(df$customerID)), "\n")
+
+# Convert SeniorCitizen from 0/1 to Yes/No
+df <- df %>%
+  mutate(SeniorCitizen = ifelse(SeniorCitizen == 1, "Yes", "No"))
+
+print(head(df, 30))
+
+# Count of customers by churn
+ggplot(df, aes(x = Churn)) +
+  geom_bar(fill = "steelblue") +
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.3) +
+  labs(title = "Count of Customers by Churn")
+
+# Pie chart of churn percentage
+churn_counts <- df %>% count(Churn) %>% mutate(pct = n / sum(n))
+
+ggplot(churn_counts, aes(x = "", y = pct, fill = Churn)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = percent(pct)), position = position_stack(vjust = 0.5)) +
+  labs(title = "Percentage of Churned Customers") +
+  theme_void()
+
+# Churn by gender
+ggplot(df, aes(x = gender, fill = Churn)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Churn by Gender")
+
+# Count of customers by SeniorCitizen
+ggplot(df, aes(x = SeniorCitizen)) +
+  geom_bar(fill = "darkorange") +
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.3) +
+  labs(title = "Count of Customers by Senior Citizen")
+
+# Stacked bar chart: Churn by SeniorCitizen (percentage)
+senior_churn <- df %>%
+  count(SeniorCitizen, Churn) %>%
+  group_by(SeniorCitizen) %>%
+  mutate(pct = n / sum(n))
+
+ggplot(senior_churn, aes(x = SeniorCitizen, y = pct, fill = Churn)) +
+  geom_col() +
+  geom_text(aes(label = percent(pct)), position = position_stack(vjust = 0.5)) +
+  scale_y_continuous(labels = percent) +
+  labs(
+    title = "Churn by Senior Citizen (Stacked Bar Chart)",
+    y = "Percentage",
+    x = "SeniorCitizen"
+  )
+
+# Tenure distribution
+ggplot(df, aes(x = tenure)) +
+  geom_histogram(bins = 72, fill = "skyblue", color = "black") +
+  labs(title = "Tenure Distribution")
+
+# Churn by contract type
+ggplot(df, aes(x = Contract, fill = Churn)) +
+  geom_bar(position = "dodge") +
+  geom_text(stat = "count", aes(label = after_stat(count)),
+            position = position_dodge(width = 0.9), vjust = -0.3) +
+  labs(title = "Count of Customers by Contract")
+
+# Service-related columns
+print(colnames(df))
+
+service_cols <- c(
+  "PhoneService", "MultipleLines", "InternetService", "OnlineSecurity",
+  "OnlineBackup", "DeviceProtection", "TechSupport",
+  "StreamingTV", "StreamingMovies"
+)
+
+# Loop through service columns and create plots
+for (col in service_cols) {
+  p <- ggplot(df, aes(x = .data[[col]], fill = Churn)) +
+    geom_bar(position = "dodge") +
+    labs(title = paste("Count Plot of", col), x = col, y = "Count")
+  print(p)
+}
+
+# Churn by payment method
+ggplot(df, aes(x = PaymentMethod, fill = Churn)) +
+  geom_bar(position = "dodge") +
+  geom_text(stat = "count", aes(label = after_stat(count)),
+            position = position_dodge(width = 0.9), vjust = -0.3) +
+  labs(title = "Churned Customers by Payment Method") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
