@@ -19,7 +19,7 @@ suppressPackageStartupMessages({
 
 # Load data
 cat("data frame\n")
-df <- read_csv("D:/git projects/WA_Fn-UseC_-Telco-Customer-Churn.csv")
+df <- read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
 print(head(df, 100))
 
 # Replace blanks in TotalCharges and convert to numeric
