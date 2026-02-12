@@ -52,7 +52,3 @@ install.packages(c("tidyverse", "scales", "ggplot2"))
 * **scales**
 
 ---
-
-Built with  R and Open Source tools.
-
-```
