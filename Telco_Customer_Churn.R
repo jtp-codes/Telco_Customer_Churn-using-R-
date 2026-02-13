@@ -125,3 +125,11 @@ ggplot(df, aes(x = PaymentMethod, fill = Churn)) +
             position = position_dodge(width = 0.9), vjust = -0.3) +
   labs(title = "Churned Customers by Payment Method") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  # Boxplot of Monthly Charges vs Churn
+ggplot(df, aes(x = Churn, y = MonthlyCharges, fill = Churn)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 1) +
+  labs(title = "Monthly Charges vs Churn Status",
+       subtitle = "Are higher bills causing customers to leave?",
+       y = "Monthly Charges ($)") +
+  theme_light()
