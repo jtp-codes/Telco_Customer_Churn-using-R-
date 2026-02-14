@@ -133,3 +133,13 @@ ggplot(df, aes(x = Churn, y = MonthlyCharges, fill = Churn)) +
        subtitle = "Are higher bills causing customers to leave?",
        y = "Monthly Charges ($)") +
   theme_light()
+
+# Density Plot: Does tenure length determine Churn?
+ggplot(df, aes(x = tenure, fill = Churn)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("No" = "green", "Yes" = "red")) +
+  labs(title = c("When do they leave? Tenure Density by Churn"),
+      subtitle = c("Higher density at low tenure indicates early-stage churn risk"),
+       x = "Tenure (Months)", y = "Density") +
+  theme_minimal()
+
