@@ -125,14 +125,28 @@ ggplot(df, aes(x = PaymentMethod, fill = Churn)) +
             position = position_dodge(width = 0.9), vjust = -0.3) +
   labs(title = "Churned Customers by Payment Method") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# Boxplot of Monthly Charges vs Churn
+# Customer Financial Attrition Profile
 ggplot(df, aes(x = Churn, y = MonthlyCharges, fill = Churn)) +
-  geom_boxplot(outlier.colour = "red", outlier.shape = 1) +
-  labs(title = "Monthly Charges vs Churn Status",
-       subtitle = "Are higher bills causing customers to leave?",
-       y = "Monthly Charges ($)") +
-  theme_light()
+# a violin plot to show the 'shape' of the data
+  geom_violin(alpha = 0.2, color = NA) +
+# a narrowed boxplot inside
+  geom_boxplot(width = 0.2, outlier.colour = "red", outlier.shape = 16, outlier.size = 1, alpha = 0.5) +
+#  jittered points to show the actual number of customers
+  geom_jitter(width = 0.1, alpha = 0.1, size = 0.5) +
+  scale_fill_manual(values = c("No" = "#2c3e50", "Yes" = "#e74c3c")) +
+  labs(
+    title = "Analysis of Monthly Charges & Customer Attrition",
+    subtitle = "Distribution shows churned customers are concentrated in higher price brackets",
+    x = "Did the Customer Churn?",
+    y = "Monthly Charges ($)",
+    caption = "Source: Telco Churn Dataset"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold", size = 14),
+    panel.grid.minor = element_blank()
+  )
 
 # Density Plot: Does tenure length determine Churn?
 ggplot(df, aes(x = tenure, fill = Churn)) +
