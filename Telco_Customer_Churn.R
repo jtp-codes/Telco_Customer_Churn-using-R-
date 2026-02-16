@@ -157,3 +157,20 @@ ggplot(df, aes(x = tenure, fill = Churn)) +
        x = "Tenure (Months)", y = "Density") +
   theme_minimal()
 
+# Create separate 'mountains' for each Internet Service type
+ggplot(df, aes(x = MonthlyCharges, fill = Churn)) +
+  geom_density(alpha = 0.6) + 
+  facet_wrap(~InternetService, ncol = 1) + 
+  scale_fill_manual(values = c("No" = "green", "Yes" = "red")) +
+  labs(
+    title = "Price Pressure: Monthly Charges Density by Service Type",
+    subtitle = "Fiber optic users show a massive churn 'peak' at high price points",
+    x = "Monthly Charges ($)",
+    y = "Density"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.background = element_rect(fill = "gray"),
+    strip.text = element_text(face = "bold"),
+    panel.spacing = unit(1, "lines")
+  )
